@@ -21,10 +21,12 @@ describe("MonkeysWithTypewriters contract", function() {
     })
 
     it("Mints a new token", async function() {
-        const { MonkeysWithTypewriters, signer1 } = await loadFixture(deployTokenFixture)
+        const { MonkeysWithTypewriters, signer1, signer2 } = await loadFixture(deployTokenFixture)
 
         await MonkeysWithTypewriters.mint()
+        await MonkeysWithTypewriters.connect(signer2).mint()
 
         expect(await MonkeysWithTypewriters.ownerOf(0)).to.equal(signer1.address)
+        expect(await MonkeysWithTypewriters.ownerOf(1)).to.equal(signer2.address)
     })
 })
