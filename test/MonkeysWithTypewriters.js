@@ -29,4 +29,13 @@ describe("MonkeysWithTypewriters contract", function() {
         expect(await MonkeysWithTypewriters.ownerOf(0)).to.equal(signer1.address)
         expect(await MonkeysWithTypewriters.ownerOf(1)).to.equal(signer2.address)
     })
+
+    it("Attaches a story when a token is minted", async function() {
+        const { MonkeysWithTypewriters, signer1, signer2 } = await loadFixture(deployTokenFixture)
+
+        await MonkeysWithTypewriters.mint()
+        
+        await MonkeysWithTypewriters.addSentence("A strange game.", 0)
+        console.log(await MonkeysWithTypewriters.stories(0, 0))
+    })
 })

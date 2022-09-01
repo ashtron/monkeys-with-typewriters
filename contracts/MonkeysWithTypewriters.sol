@@ -25,9 +25,8 @@ contract MonkeysWithTypewriters is ERC721 {
     function mint() public returns (uint256) {
         uint256 newItemId = _tokenIds.current();
         _mint(msg.sender, newItemId);
-
         _tokenIds.increment();
-        
+
         return newItemId;
     }
 }
