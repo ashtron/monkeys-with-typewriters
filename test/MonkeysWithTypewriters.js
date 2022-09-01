@@ -12,7 +12,7 @@ describe("MonkeysWithTypewriters contract", function() {
         return { MonkeysWithTypewriters, signer1, signer2 }
     }
 
-    it("Read name and symbol", async function() {
+    it("Reads name and symbol", async function() {
         const { MonkeysWithTypewriters } = await loadFixture(deployTokenFixture)
         
         const name = await MonkeysWithTypewriters.name()
@@ -31,7 +31,7 @@ describe("MonkeysWithTypewriters contract", function() {
     })
 
     it("Can add a sentence", async function() {
-        const { MonkeysWithTypewriters, signer1, signer2 } = await loadFixture(deployTokenFixture)
+        const { MonkeysWithTypewriters, signer1 } = await loadFixture(deployTokenFixture)
 
         await MonkeysWithTypewriters.mint()
         await MonkeysWithTypewriters.addSentence("A strange game.", 0)
@@ -41,7 +41,7 @@ describe("MonkeysWithTypewriters contract", function() {
     })
 
     it("Stores sentences correctly", async function() {
-        const { MonkeysWithTypewriters, signer1, signer2 } = await loadFixture(deployTokenFixture)
+        const { MonkeysWithTypewriters } = await loadFixture(deployTokenFixture)
 
         await MonkeysWithTypewriters.mint()
 
@@ -53,4 +53,13 @@ describe("MonkeysWithTypewriters contract", function() {
 
         expect(`${firstSentence[0]} ${secondSentence[0]}`).to.equal("A strange game. The only winning move is not to play.")
     })
+
+    // it("Only the owner of an NFT can add sentences", async function() {
+    //     const { MonkeysWithTypewriters, signer1, signer2 } = await loadFixture(deployTokenFixture)
+
+    //     await MonkeysWithTypewriters.mint()
+
+    //     expect(await MonkeysWithTypewriters.connect(signer2).addSentence("A strange game.", 0))
+    //         .to.be.revertedWithCustomError(MonkeysWithTypewriters, "NotOwner")
+    // })
 })

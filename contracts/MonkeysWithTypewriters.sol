@@ -15,9 +15,16 @@ contract MonkeysWithTypewriters is ERC721 {
 
     mapping(uint256 => Sentence[]) public stories;
 
+    error NotOwner();
+
+    modifier onlyOwner(uint _tokenId, address _address) {
+        if (ownerOf(_tokenId) != _address) revert NotOwner();
+        _;
+    }
+
     constructor() ERC721("MonkeysWithTypewriters", "MWT") {}
 
-    function addSentence(string memory _text, uint256 _tokenId) public {
+    function addSentence(string memory _text, uint256 _tokenId) public onlyOwner(_tokenId, msg.sender) {
         Sentence[] storage story = stories[_tokenId];
         story.push(Sentence(_text, msg.sender));
     }
