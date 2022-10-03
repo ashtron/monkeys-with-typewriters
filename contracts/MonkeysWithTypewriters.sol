@@ -14,19 +14,26 @@ contract MonkeysWithTypewriters is ERC721 {
     }
 
     mapping(uint256 => Sentence[]) public stories;
+    mapping(uint256 => address) public lastSentenceAdders;
 
     error NotOwner();
 
     modifier onlyOwner(uint _tokenId, address _address) {
-        if (ownerOf(_tokenId) != _address) revert NotOwner();
+        require(ownerOf(_tokenId) == _address, "Only the NFT owner can add a new sentence.");
+        _;
+    }
+
+    modifier onlyNewAdder(uint _tokenId, address _address) {
+        require(lastSentenceAdders[_tokenId] != _address, "A different address must add the next sentence.");
         _;
     }
 
     constructor() ERC721("MonkeysWithTypewriters", "MWT") {}
 
-    function addSentence(string memory _text, uint256 _tokenId) public onlyOwner(_tokenId, msg.sender) {
+    function addSentence(string memory _text, uint256 _tokenId) public onlyOwner(_tokenId, msg.sender) onlyNewAdder(_tokenId, msg.sender) {
         Sentence[] storage story = stories[_tokenId];
         story.push(Sentence(_text, msg.sender));
+        lastSentenceAdders[_tokenId] = msg.sender;
     }
 
     function mint() public returns (uint256) {
