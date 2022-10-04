@@ -40,19 +40,20 @@ describe("MonkeysWithTypewriters contract", function() {
         expect(sentence[0]).to.equal("A strange game.")
     })
 
-    // it("Stores sentences correctly", async function() {
-    //     const { MonkeysWithTypewriters } = await loadFixture(deployTokenFixture)
+    it("Stores sentences correctly", async function() {
+        const { MonkeysWithTypewriters, signer1, signer2 } = await loadFixture(deployTokenFixture)
 
-    //     await MonkeysWithTypewriters.mint()
+        await MonkeysWithTypewriters.mint()
 
-    //     await MonkeysWithTypewriters.addSentence("A strange game.", 0)
-    //     await MonkeysWithTypewriters.addSentence("The only winning move is not to play.", 0)
+        await MonkeysWithTypewriters.addSentence("A strange game.", 0)
+        await MonkeysWithTypewriters.transferFrom(signer1.address, signer2.address, 0)
+        await MonkeysWithTypewriters.connect(signer2).addSentence("The only winning move is not to play.", 0)
 
-    //     const firstSentence = await MonkeysWithTypewriters.stories(0, 0)
-    //     const secondSentence = await MonkeysWithTypewriters.stories(0, 1)
+        const firstSentence = await MonkeysWithTypewriters.stories(0, 0)
+        const secondSentence = await MonkeysWithTypewriters.stories(0, 1)
 
-    //     expect(`${firstSentence[0]} ${secondSentence[0]}`).to.equal("A strange game. The only winning move is not to play.")
-    // })
+        expect(`${firstSentence[0]} ${secondSentence[0]}`).to.equal("A strange game. The only winning move is not to play.")
+    })
 
     it("Only the owner of an NFT can add sentences", async function() {
         const { MonkeysWithTypewriters, signer1, signer2 } = await loadFixture(deployTokenFixture)
