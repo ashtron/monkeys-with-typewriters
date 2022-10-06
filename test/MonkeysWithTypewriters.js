@@ -72,4 +72,37 @@ describe("MonkeysWithTypewriters contract", function() {
         
         await expect(MonkeysWithTypewriters.addSentence("The only winning move is not to play.", 0)).to.be.revertedWith("A different address must add the next sentence.")
     })
+
+    it("Can fetch story lengths", async function() {
+        const { MonkeysWithTypewriters, signer1, signer2 } = await loadFixture(deployTokenFixture)
+
+        await MonkeysWithTypewriters.mint()
+        await MonkeysWithTypewriters.addSentence("A strange game.", 0)
+        await MonkeysWithTypewriters.transferFrom(signer1.address, signer2.address, 0)
+        await MonkeysWithTypewriters.connect(signer2).addSentence("The only winning move is not to play.", 0)
+
+        const storyLength = await MonkeysWithTypewriters.getStoryLength(0)
+
+        expect(storyLength).to.equal(2)
+    })
+
+    it("Can fetch stories", async function() {
+        const { MonkeysWithTypewriters, signer1, signer2 } = await loadFixture(deployTokenFixture)
+
+        await MonkeysWithTypewriters.mint()
+        await MonkeysWithTypewriters.addSentence("A strange game.", 0)
+        await MonkeysWithTypewriters.transferFrom(signer1.address, signer2.address, 0)
+        await MonkeysWithTypewriters.connect(signer2).addSentence("The only winning move is not to play.", 0)
+
+        const storyLength = await MonkeysWithTypewriters.getStoryLength(0)
+        let story = ""
+
+        for (let i = 0; i < storyLength; i++) {
+            let sentence = await MonkeysWithTypewriters.stories(0, i)
+            story += `${sentence[0]} `
+        }
+
+        const expectedStory = "A strange game. The only winning move is not to play."
+        expect(story.slice(0, story.length - 1)).to.equal(expectedStory)
+    })
 })

@@ -16,8 +16,6 @@ contract MonkeysWithTypewriters is ERC721 {
     mapping(uint256 => Sentence[]) public stories;
     mapping(uint256 => address) public lastSentenceAdders;
 
-    error NotOwner();
-
     modifier onlyOwner(uint _tokenId, address _address) {
         require(ownerOf(_tokenId) == _address, "Only the NFT owner can add a new sentence.");
         _;
@@ -34,6 +32,10 @@ contract MonkeysWithTypewriters is ERC721 {
         Sentence[] storage story = stories[_tokenId];
         story.push(Sentence(_text, msg.sender));
         lastSentenceAdders[_tokenId] = msg.sender;
+    }
+
+    function getStoryLength(uint256 _tokenId) public view returns (uint256) {
+        return stories[_tokenId].length;
     }
 
     function mint() public returns (uint256) {
